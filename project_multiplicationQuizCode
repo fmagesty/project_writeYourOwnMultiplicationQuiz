@@ -1,0 +1,35 @@
+# Quiz 10 multiplication questions, ranging from 0x0 to 9x9. 
+# If the user enters the correct answer the program displays 'correct!'  for 1 second and move on to next question
+# User gets 3 tries to get it right before the program moves to next question
+# 8 seconds after first displaying the question, it is marked as incorrect even if user enter a correct input after the 8-sec limit
+
+import pyinputplus as pyip 
+import random, time
+
+questionNumber = 1
+rightAnswer = 0
+
+for i in range(0, 10):
+    firstRand = random.randint(0,9)
+    secondRand = random.randint(0,9)
+    prompt = 'Question %s: what is the result of %s x %s? '% (questionNumber, firstRand, secondRand)
+    try:
+        response = pyip.inputNum(prompt, allowRegexes= ['^%s$' % (firstRand * secondRand)], blockRegexes=['.*'], timeout=8, limit=3)
+    # Timeout exception:
+    except pyip.TimeoutException:
+        print('Incorrect. You took more than 8 seconds to answer the question.')
+    # Retry exception:
+    except pyip.RetryLimitException:
+        print('You already used 3/3 chances to answer the question.')
+    # If input is a correct answer:
+    if response == firstRand * secondRand:
+        print('Correct!')
+        rightAnswer += 1
+        time.sleep(1)
+    # Moving to the next question:
+    questionNumber += 1
+    # Ending the game:
+    if questionNumber == 11:
+        print('Game is over. You\'ve got %s questions right.' % (rightAnswer))
+        break
+
